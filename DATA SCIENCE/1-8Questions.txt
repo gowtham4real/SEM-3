@@ -1,0 +1,363 @@
+Q1)Apply KNN classification on Vowel dataset for two different k values.
+Compare their predictive accuracy. The output should contain
+(i) Classification Report
+(ii) Confusion Matrix
+(iii) Accuracy
+(iv) Print the best ‘k'
+
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+
+# Load the Vowel dataset (make sure you have it or adjust the path accordingly)
+# You can find the Vowel dataset in the UCI Machine Learning Repository: https://archive.ics.uci.edu/ml/datasets/Vowel
+# For example, download the file 'vowel-context.data' and load it using pandas or numpy.
+
+# Assuming X contains the features and y contains the labels
+# Replace this with your actual data loading code
+# X, y = load_data()
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Define two different values for k
+k_values = [3, 5]
+
+best_accuracy = 0
+best_k = 0
+
+# Iterate through different k values
+for k in k_values:
+    # Create a KNN classifier with the current k value
+    knn_classifier = KNeighborsClassifier(n_neighbors=k)
+    
+    # Train the model
+    knn_classifier.fit(X_train, y_train)
+    
+    # Make predictions on the test set
+    y_pred = knn_classifier.predict(X_test)
+    
+    # Calculate accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+    
+    # Print classification report and confusion matrix
+    print(f"Classification Report for k={k}:\n{classification_report(y_test, y_pred)}")
+    print(f"Confusion Matrix for k={k}:\n{confusion_matrix(y_test, y_pred)}")
+    print(f"Accuracy for k={k}: {accuracy}\n")
+    
+    # Update the best k if the current model has higher accuracy
+    if accuracy > best_accuracy:
+        best_accuracy = accuracy
+        best_k = k
+
+# Print the best k
+print(f"The best k is: {best_k} with accuracy: {best_accuracy}")
+
+Q2)Apply Naïve Bayes classification on diabetes dataset to generate the following
+results.
+(i) Classification Report
+(ii) Confusion Matrix
+(iii) Accuracy
+(iv) Do the same with different Train and Test set ratio and compare accuracy
+
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+
+# Load the diabetes dataset (make sure you have it or adjust the path accordingly)
+# Replace this with your actual data loading code
+# X, y = load_diabetes_data()
+
+# Assuming X contains the features and y contains the labels
+
+# Default train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a Naïve Bayes classifier
+nb_classifier = GaussianNB()
+
+# Train the model
+nb_classifier.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = nb_classifier.predict(X_test)
+
+# Calculate accuracy, classification report, and confusion matrix
+print("Default Train-Test Split:")
+print("Classification Report:\n", classification_report(y_test, y_pred))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+# Vary the train-test split ratio
+ratios = [0.1, 0.2, 0.3, 0.4, 0.5]
+for ratio in ratios:
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=1-ratio, random_state=42)
+    
+    nb_classifier.fit(X_train, y_train)
+    y_pred = nb_classifier.predict(X_test)
+    
+    print(f"\nTrain-Test Split Ratio: {ratio}")
+    print("Classification Report:\n", classification_report(y_test, y_pred))
+    print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+    print("Accuracy:", accuracy_score(y_test, y_pred))
+
+Q3)car_age = [5,7,8,7,2,17,2,9,4,11,12,9,6]
+ car_speed = [99,86,87,88,111,86,103,87,94,78,77,85,86] Using the given dataset,
+(i) Draw the line of linear regression
+(ii) Find car_speed for car_age 14.
+
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+# Given dataset
+car_age = np.array([5, 7, 8, 7, 2, 17, 2, 9, 4, 11, 12, 9, 6])
+car_speed = np.array([99, 86, 87, 88, 111, 86, 103, 87, 94, 78, 77, 85, 86])
+
+# Reshape the data for sklearn LinearRegression
+car_age = car_age.reshape(-1, 1)
+
+# Create a linear regression model
+model = LinearRegression()
+
+# Fit the model to the data
+model.fit(car_age, car_speed)
+
+# Predict car_speed for car_age 14
+car_age_14 = np.array([[14]])
+predicted_speed = model.predict(car_age_14)
+
+# Plot the line of linear regression
+plt.scatter(car_age, car_speed, color='blue')
+plt.plot(car_age, model.predict(car_age), color='red')
+plt.title('Linear Regression - Car Age vs Car Speed')
+plt.xlabel('Car Age')
+plt.ylabel('Car Speed')
+plt.show()
+
+# Print the predicted car_speed for car_age 14
+print(f"The predicted car speed for car age 14 is: {predicted_speed[0]}")
+
+
+Q4)Use SVM classifier with two different kernel functions to classify Wisconsin data
+to generate the following outputs. (i) Confusion Matrix (ii) Classification report
+(iii) Comparison of accuracies.
+
+import numpy as np
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
+
+# Load the Wisconsin breast cancer dataset
+data = datasets.load_breast_cancer()
+X = data.data
+y = data.target
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# SVM with RBF kernel
+svm_rbf = SVC(kernel='rbf', gamma='scale')
+svm_rbf.fit(X_train, y_train)
+y_pred_rbf = svm_rbf.predict(X_test)
+
+# SVM with Linear kernel
+svm_linear = SVC(kernel='linear')
+svm_linear.fit(X_train, y_train)
+y_pred_linear = svm_linear.predict(X_test)
+
+# Confusion Matrix and Classification Report for RBF kernel
+print("Confusion Matrix (RBF kernel):\n", confusion_matrix(y_test, y_pred_rbf))
+print("\nClassification Report (RBF kernel):\n", classification_report(y_test, y_pred_rbf))
+
+# Confusion Matrix and Classification Report for Linear kernel
+print("\nConfusion Matrix (Linear kernel):\n", confusion_matrix(y_test, y_pred_linear))
+print("\nClassification Report (Linear kernel):\n", classification_report(y_test, y_pred_linear))
+
+# Comparison of accuracies
+accuracy_rbf = accuracy_score(y_test, y_pred_rbf)
+accuracy_linear = accuracy_score(y_test, y_pred_linear)
+
+print(f"\nAccuracy (RBF kernel): {accuracy_rbf}")
+print(f"Accuracy (Linear kernel): {accuracy_linear}")
+
+# You can also compare accuracy directly from the models
+# accuracy_rbf = svm_rbf.score(X_test, y_test)
+# accuracy_linear = svm_linear.score(X_test, y_test)
+
+Q5)Implement Simple Linear regression based on
+ age = [18, 22, 30, 45, 65, 80]
+ accident_no = [38, 36, 24, 20, 18, 28]
+(i) Fit and display the regression line for the above data.
+(ii) Find number of accidents for the ages 40 and 60.
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+# Given data
+age = np.array([18, 22, 30, 45, 65, 80]).reshape(-1, 1)
+accident_no = np.array([38, 36, 24, 20, 18, 28])
+
+# Create and fit the linear regression model
+model = LinearRegression()
+model.fit(age, accident_no)
+
+# (i) Display the regression line
+plt.scatter(age, accident_no, color='blue', label='Actual data')
+plt.plot(age, model.predict(age), color='red', label='Regression Line')
+plt.title('Simple Linear Regression - Age vs Accident No')
+plt.xlabel('Age')
+plt.ylabel('Number of Accidents')
+plt.legend()
+plt.show()
+
+# (ii) Find number of accidents for the ages 40 and 60
+age_40 = np.array([[40]])
+age_60 = np.array([[60]])
+
+accidents_40 = model.predict(age_40)
+accidents_60 = model.predict(age_60)
+
+print(f"\nNumber of accidents for age 40: {accidents_40[0]}")
+print(f"Number of accidents for age 60: {accidents_60[0]}")
+
+Q6)Apply Decision Tree Classifier on Winequality dataset to generate the following
+results.
+(v) Classification Report
+(vi) Confusion Matrix
+(vii) Plot Decision Tree
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn import tree
+import matplotlib.pyplot as plt
+
+# Load the Winequality dataset (make sure you have it or adjust the path accordingly)
+# Replace this with your actual data loading code
+# wine_data = pd.read_csv('winequality.csv')
+
+# Assuming 'quality' is the target variable
+X = wine_data.drop('quality', axis=1)
+y = wine_data['quality']
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a Decision Tree Classifier
+dt_classifier = DecisionTreeClassifier(random_state=42)
+
+# Train the model
+dt_classifier.fit(X_train, y_train)
+
+# (v) Classification Report
+y_pred = dt_classifier.predict(X_test)
+print("Classification Report:\n", classification_report(y_test, y_pred))
+
+# (vi) Confusion Matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:\n", conf_matrix)
+
+# (vii) Plot Decision Tree
+plt.figure(figsize=(15, 10))
+tree.plot_tree(dt_classifier, feature_names=X.columns, class_names=[str(i) for i in sorted(y.unique())], filled=True, rounded=True)
+plt.show()
+
+Q7)Apply kMeans clustering on Wisconsin Dataset. Assume k=2 and plot a graph for
+the derived clusters. Also generate elbow graph for this problem and check
+whether our assumption for k as 2 is true.
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.datasets import load_breast_cancer
+from sklearn.preprocessing import StandardScaler
+
+# Load the Wisconsin breast cancer dataset
+data = load_breast_cancer()
+X = data.data
+
+# Standardize the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Assume k=2 and apply kMeans clustering
+k = 2
+kmeans = KMeans(n_clusters=k, random_state=42)
+clusters = kmeans.fit_predict(X_scaled)
+
+# Plot the clusters in 2D (using the first two features for simplicity)
+plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=clusters, cmap='viridis', edgecolors='k')
+plt.title('kMeans Clustering (k=2)')
+plt.xlabel('Feature 1 (Standardized)')
+plt.ylabel('Feature 2 (Standardized)')
+plt.show()
+
+# Generate Elbow graph to determine optimal k
+inertia_values = []
+possible_k_values = range(1, 11)
+
+for k_value in possible_k_values:
+    kmeans = KMeans(n_clusters=k_value, random_state=42)
+    kmeans.fit(X_scaled)
+    inertia_values.append(kmeans.inertia_)
+
+# Plot the Elbow graph
+plt.plot(possible_k_values, inertia_values, marker='o')
+plt.title('Elbow Graph for Optimal k')
+plt.xlabel('Number of Clusters (k)')
+plt.ylabel('Inertia (Within-cluster sum of squares)')
+plt.show()
+
+Q8)Apply neural network algorithm on Iris dataset. Generate
+(i) Confusion Matrix
+(ii) Classification report and
+(iii) Compare accuracies for different Train-Test set ratio.
+
+import numpy as np
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_iris
+
+# Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Specify different train-test split ratios
+ratios = [0.6, 0.7, 0.8, 0.9]
+
+for ratio in ratios:
+    # Split the dataset into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=1-ratio, random_state=42)
+
+    # Create a neural network classifier
+    mlp_classifier = MLPClassifier(random_state=42, max_iter=1000)
+
+    # Train the model
+    mlp_classifier.fit(X_train, y_train)
+
+    # Make predictions on the test set
+    y_pred = mlp_classifier.predict(X_test)
+
+    # (i) Confusion Matrix
+    print(f"\nTrain-Test Split Ratio: {ratio}")
+    print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+
+    # (ii) Classification Report
+    print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
+    # (iii) Accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"Accuracy: {accuracy}")
+
+# Note: Adjust the hyperparameters of the MLPClassifier based on your specific requirements and dataset.
+
+

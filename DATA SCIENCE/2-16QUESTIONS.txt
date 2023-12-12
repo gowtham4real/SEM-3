@@ -1,0 +1,608 @@
+QUESTION 1
+
+Dataset: <Breast_Cancer.csv>
+(i) Conduct exploratory data analysis on the given dataset and report the
+details.
+(ii) Visualize the analysis results using (i) scatter plot (ii) histogram & (iii) box
+plot.
+(iii) Implement the k-NN classification algorithm using the dataset. Try with
+different k values and show the accuracy.
+
+
+
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+# Load the dataset
+data = pd.read_csv("Breast_Cancer.csv")
+
+# Display the first few rows of the dataset
+print("Dataset Preview:")
+print(data.head())
+
+# Summary statistics of the dataset
+print("\nSummary Statistics:")
+print(data.describe())
+
+# Explore the distribution of the target variable
+sns.countplot(x='diagnosis', data=data)
+plt.title('Diagnosis Distribution')
+plt.show()
+
+# Scatter plot
+sns.scatterplot(x='mean_radius', y='mean_texture', hue='diagnosis', data=data)
+plt.title('Scatter Plot: Mean Radius vs Mean Texture')
+plt.show()
+
+# Histogram
+data.hist(figsize=(12, 10), bins=20)
+plt.suptitle('Histograms of Features')
+plt.show()
+
+# Box plot
+sns.boxplot(x='diagnosis', y='mean_radius', data=data)
+plt.title('Box Plot: Diagnosis vs Mean Radius')
+plt.show()
+
+# Implement k-NN classification
+# Prepare the data
+X = data.drop(['diagnosis'], axis=1)
+y = data['diagnosis']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Implement k-NN for different k values
+k_values = [3, 5, 7]
+for k in k_values:
+    # Create k-NN classifier
+    knn_classifier = KNeighborsClassifier(n_neighbors=k)
+    
+    # Fit the model
+    knn_classifier.fit(X_train, y_train)
+    
+    # Make predictions
+    y_pred = knn_classifier.predict(X_test)
+    
+    # Calculate accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+    
+    print(f'k-NN (k={k}) Accuracy: {accuracy:.4f}')
+    
+    
+    
+    
+QUESTION 2
+
+Dataset: <Iris.csv>
+(i) Conduct exploratory data analysis on the given dataset and report the
+details.
+(ii) Visualize the analysis results using (i) scatter plot (ii) histogram & (iii) box
+plot.
+(iii) Implement the K-Means clustering algorithm using the dataset. Try with
+different K values and show the accuracy.
+
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.cluster import KMeans
+from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import StandardScaler
+
+# Load the dataset
+data = pd.read_csv("Iris.csv")
+
+# Display the first few rows of the dataset
+print("Dataset Preview:")
+print(data.head())
+
+# Summary statistics of the dataset
+print("\nSummary Statistics:")
+print(data.describe())
+
+# Explore the distribution of the target variable
+sns.countplot(x='species', data=data)
+plt.title('Species Distribution')
+plt.show()
+
+# Scatter plot
+sns.pairplot(data, hue='species', markers='o')
+plt.suptitle('Pair Plot of Iris Dataset')
+plt.show()
+
+# Histogram
+data.hist(figsize=(12, 10), bins=20)
+plt.suptitle('Histograms of Features')
+plt.show()
+
+# Box plot
+sns.boxplot(x='species', y='sepal_length', data=data)
+plt.title('Box Plot: Species vs Sepal Length')
+plt.show()
+
+# Implement K-Means clustering
+# Prepare the data
+X = data.drop(['species'], axis=1)
+
+# Standardize the features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Implement K-Means for different K values
+k_values = [2, 3, 4]
+for k in k_values:
+    # Create K-Means model
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    
+    # Fit the model
+    kmeans.fit(X_scaled)
+    
+    # Predict the clusters
+    labels = kmeans.labels_
+    
+    # Calculate accuracy (for demonstration purposes, as K-Means is unsupervised)
+    accuracy = accuracy_score(data['species'].map({'setosa': 0, 'versicolor': 1, 'virginica': 2}), labels)
+    
+    print(f'K-Means (K={k}) Accuracy: {accuracy:.4f}')
+
+# Note: The accuracy calculation in K-Means is for demonstration purposes only and may not be meaningful in unsupervised scenarios.
+
+
+QUESTION 3
+
+Dataset: <Iris.csv>
+(i) Conduct exploratory data analysis on the given dataset and report the
+details.
+(ii) Visualize the analysis results using (i) scatter plot (ii) histogram & (iii) box
+plot.
+(iii) Implement the Multiple Linear Regression algorithm using the dataset and
+show the accuracy.
+
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# Load the dataset
+data = pd.read_csv("Iris.csv")
+
+# Display the first few rows of the dataset
+print("Dataset Preview:")
+print(data.head())
+
+# Summary statistics of the dataset
+print("\nSummary Statistics:")
+print(data.describe())
+
+# Explore the distribution of the target variable (sepal length for this example)
+sns.histplot(data['sepal_length'], kde=True)
+plt.title('Distribution of Sepal Length')
+plt.show()
+
+# Scatter plot with the chosen features
+sns.pairplot(data, x_vars=['sepal_width', 'petal_length', 'petal_width'], y_vars='sepal_length', kind='scatter')
+plt.suptitle('Scatter Plots: Sepal Width, Petal Length, Petal Width vs Sepal Length')
+plt.show()
+
+# Implement Multiple Linear Regression
+# For simplicity, we'll use sepal width, petal length, and petal width as features
+X = data[['sepal_width', 'petal_length', 'petal_width']]
+y = data['sepal_length']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create and fit the model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test)
+
+# Calculate accuracy (for regression, we typically use metrics like mean squared error)
+mse = mean_squared_error(y_test, y_pred)
+print(f'Mean Squared Error: {mse:.4f}')
+
+
+QUESTION 4
+
+Dataset: <Breast_Cancer.csv>
+(i) Conduct exploratory data analysis on the given dataset and report the
+details.
+(ii) Visualize the analysis results using (i) scatter plot (ii) histogram & (iii) box
+plot.
+(iii) Implement the Naïve Bayes classification algorithm using the dataset.
+Display the classification report the accuracy.
+
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import classification_report, accuracy_score
+from sklearn.preprocessing import LabelEncoder
+
+# Load the dataset
+data = pd.read_csv("Breast_Cancer.csv")
+
+# Display the first few rows of the dataset
+print("Dataset Preview:")
+print(data.head())
+
+# Summary statistics of the dataset
+print("\nSummary Statistics:")
+print(data.describe())
+
+# Explore the distribution of the target variable
+sns.countplot(x='diagnosis', data=data)
+plt.title('Diagnosis Distribution')
+plt.show()
+
+# Scatter plot
+sns.pairplot(data, hue='diagnosis', vars=['mean_radius', 'mean_texture', 'mean_area', 'mean_smoothness'])
+plt.suptitle('Scatter Plot: Diagnosis vs Selected Features')
+plt.show()
+
+# Histogram
+data.hist(figsize=(12, 10), bins=20)
+plt.suptitle('Histograms of Features')
+plt.show()
+
+# Box plot
+sns.boxplot(x='diagnosis', y='mean_radius', data=data)
+plt.title('Box Plot: Diagnosis vs Mean Radius')
+plt.show()
+
+# Implement Naïve Bayes classification
+# Prepare the data
+X = data.drop(['diagnosis'], axis=1)
+y = data['diagnosis']
+
+# Encode categorical labels
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42)
+
+# Create and fit the Naïve Bayes model
+naive_bayes_model = GaussianNB()
+naive_bayes_model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = naive_bayes_model.predict(X_test)
+
+# Display classification report and accuracy
+classification_rep = classification_report(y_test, y_pred)
+accuracy = accuracy_score(y_test, y_pred)
+
+print("Classification Report:\n", classification_rep)
+print("Accuracy:", accuracy)
+
+
+QUESTION 5
+
+Dataset: <Wine_Quality.csv>
+(i) Conduct exploratory data analysis on the given dataset and report the
+details.
+(ii) Visualize the analysis results using (i) scatter plot (ii) histogram & (iii) box
+plot.
+(iii) Implement the k-NN classification algorithm using the dataset. Try with
+different K values and show the accuracy.
+
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import StandardScaler
+
+# Load the dataset
+data = pd.read_csv("Wine_Quality.csv")
+
+# Display the first few rows of the dataset
+print("Dataset Preview:")
+print(data.head())
+
+# Summary statistics of the dataset
+print("\nSummary Statistics:")
+print(data.describe())
+
+# Explore the distribution of the target variable
+sns.countplot(x='quality', data=data)
+plt.title('Quality Distribution')
+plt.show()
+
+# Scatter plot
+sns.pairplot(data, hue='quality', markers='o')
+plt.suptitle('Pair Plot of Wine Quality Dataset')
+plt.show()
+
+# Histogram
+data.hist(figsize=(12, 10), bins=20)
+plt.suptitle('Histograms of Features')
+plt.show()
+
+# Box plot
+sns.boxplot(x='quality', y='alcohol', data=data)
+plt.title('Box Plot: Quality vs Alcohol Content')
+plt.show()
+
+# Implement k-NN classification
+# Prepare the data
+X = data.drop(['quality'], axis=1)
+y = data['quality']
+
+# Standardize the features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+# Implement k-NN for different k values
+k_values = [3, 5, 7]
+for k in k_values:
+    # Create k-NN classifier
+    knn_classifier = KNeighborsClassifier(n_neighbors=k)
+    
+    # Fit the model
+    knn_classifier.fit(X_train, y_train)
+    
+    # Make predictions
+    y_pred = knn_classifier.predict(X_test)
+    
+    # Calculate accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+    
+    print(f'k-NN (k={k}) Accuracy: {accuracy:.4f}')
+
+
+QUESTION 6
+
+Dataset: <Housing_Price.csv>
+(i) Conduct exploratory data analysis on the given dataset and report the
+details.
+(ii) Visualize the analysis results using (i) scatter plot (ii) histogram & (iii) box
+plot.
+(iii) Implement the K-Means clustering algorithm using the dataset. Try with
+different k values and show the accuracy.
+
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.cluster import KMeans
+from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+
+# Load the dataset
+data = pd.read_csv("Housing_Price.csv")
+
+# Display the first few rows of the dataset
+print("Dataset Preview:")
+print(data.head())
+
+# Summary statistics of the dataset
+print("\nSummary Statistics:")
+print(data.describe())
+
+# Explore the distribution of the target variable (if available)
+sns.histplot(data['target_variable'], kde=True)
+plt.title('Distribution of Target Variable')
+plt.show()
+
+# Scatter plot
+sns.scatterplot(x='feature_1', y='feature_2', data=data)
+plt.title('Scatter Plot: Feature 1 vs Feature 2')
+plt.show()
+
+# Histogram
+data.hist(figsize=(12, 10), bins=20)
+plt.suptitle('Histograms of Features')
+plt.show()
+
+# Box plot
+sns.boxplot(x='target_variable', y='feature_1', data=data)
+plt.title('Box Plot: Target Variable vs Feature 1')
+plt.show()
+
+# Implement K-Means clustering
+# Prepare the data
+X = data.drop(['target_variable'], axis=1)  # Adjust the target variable column name
+y = data['target_variable']
+
+# Standardize the features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+# Implement K-Means for different k values
+k_values = [2, 3, 4]
+for k in k_values:
+    # Create K-Means model
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    
+    # Fit the model
+    kmeans.fit(X_train)
+    
+    # Predict the clusters
+    labels = kmeans.predict(X_test)
+    
+    # Calculate accuracy (for demonstration purposes, as K-Means is unsupervised)
+    accuracy = accuracy_score(y_test, labels)
+    
+    print(f'K-Means (K={k}) Accuracy: {accuracy:.4f}')
+
+
+QUESTION 7
+
+Dataset: <Wine_Quality.csv>
+(i) Conduct exploratory data analysis on the given dataset and report the
+details.
+(ii) Visualize the analysis results using (i) scatter plot (ii) histogram & (iii) box
+plot.
+(iii) Implement the Naïve Bayes classification algorithm using the dataset.
+Display the classification report the accuracy.
+
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import classification_report, accuracy_score
+from sklearn.preprocessing import LabelEncoder
+
+# Load the dataset
+data = pd.read_csv("Wine_Quality.csv")
+
+# Display the first few rows of the dataset
+print("Dataset Preview:")
+print(data.head())
+
+# Summary statistics of the dataset
+print("\nSummary Statistics:")
+print(data.describe())
+
+# Explore the distribution of the target variable
+sns.countplot(x='quality', data=data)
+plt.title('Quality Distribution')
+plt.show()
+
+# Scatter plot
+sns.pairplot(data, hue='quality', markers='o')
+plt.suptitle('Pair Plot of Wine Quality Dataset')
+plt.show()
+
+# Histogram
+data.hist(figsize=(12, 10), bins=20)
+plt.suptitle('Histograms of Features')
+plt.show()
+
+# Box plot
+sns.boxplot(x='quality', y='alcohol', data=data)
+plt.title('Box Plot: Quality vs Alcohol Content')
+plt.show()
+
+# Implement Naïve Bayes classification
+# Prepare the data
+X = data.drop(['quality'], axis=1)
+y = data['quality']
+
+# Encode categorical labels
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42)
+
+# Create and fit the Naïve Bayes model
+naive_bayes_model = GaussianNB()
+naive_bayes_model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = naive_bayes_model.predict(X_test)
+
+# Display classification report and accuracy
+classification_rep = classification_report(y_test, y_pred)
+accuracy = accuracy_score(y_test, y_pred)
+
+print("Classification Report:\n", classification_rep)
+print("Accuracy:", accuracy)
+
+
+QUESTION 8
+
+Dataset: <Housing_Price.csv>
+(i) Conduct exploratory data analysis on the given dataset and report the
+details.
+(ii) Visualize the analysis results using (i) scatter plot (ii) histogram & (iii) box
+plot.
+(iii) Implement the Multiple Linear Regression algorithm using the dataset and
+show the accuracy.
+
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.preprocessing import StandardScaler
+
+# Load the dataset
+data = pd.read_csv("Housing_Price.csv")
+
+# Display the first few rows of the dataset
+print("Dataset Preview:")
+print(data.head())
+
+# Summary statistics of the dataset
+print("\nSummary Statistics:")
+print(data.describe())
+
+# Explore the distribution of the target variable
+sns.histplot(data['target_variable'], kde=True)
+plt.title('Distribution of Target Variable')
+plt.show()
+
+# Scatter plot with selected features
+sns.scatterplot(x='feature_1', y='feature_2', data=data)
+plt.title('Scatter Plot: Feature 1 vs Feature 2')
+plt.show()
+
+# Histogram
+data.hist(figsize=(12, 10), bins=20)
+plt.suptitle('Histograms of Features')
+plt.show()
+
+# Box plot
+sns.boxplot(x='target_variable', y='feature_1', data=data)
+plt.title('Box Plot: Target Variable vs Feature 1')
+plt.show()
+
+# Implement Multiple Linear Regression
+# Prepare the data
+X = data.drop(['target_variable'], axis=1)  # Adjust the target variable column name
+y = data['target_variable']
+
+# Standardize the features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+# Create and fit the model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test)
+
+# Calculate accuracy (for regression, we typically use metrics like mean squared error and R-squared)
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f'Mean Squared Error: {mse:.4f}')
+print(f'R-squared: {r2:.4f}')
+
+
+
